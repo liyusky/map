@@ -18,7 +18,7 @@
               'PORT': '3306',
           }
       }`
-      自己修改数据库 (mysql)
+      自己修改数据库 (mysql)   
 >>    112行 `ALLOWED_HOSTS = ['192.168.1.33']` 修改 192.168.1.33 为查询中的IPv4
   2. pip install Django
   3. pip install mysqlclient
@@ -26,6 +26,6 @@
   5. pip install django-cors-headers
   6. pip install xlrd
   6. 打开cmd (在外层server打开)   
-    1. python manage.py makemigrations server
-    2. python manage.py migrate
+    1. python manage.py makemigrations server 
+    2. python manage.py migrate 
     3. 输入指令 python manage.py runserver 192.168.1.33:8080 (192.168.1.33 换为 IPv4 地址)
