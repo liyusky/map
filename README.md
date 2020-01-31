@@ -28,4 +28,8 @@
   6. 打开cmd (在外层server打开)   
     1. python manage.py makemigrations server   
     2. python manage.py migrate   
-    3. 输入指令 python manage.py runserver 192.168.1.33:8080 (192.168.1.33 换为 IPv4 地址)
+    3. 输入指令 python manage.py runserver 192.168.1.33:8080 (192.168.1.33 换为 IPv4 地址)   
+    
+    
+ > http://192.168.1.33:3000/upload (上传， 文件在server/server/file下   记得换ip)
+ > http://192.168.1.33:3000/table (展示数据， 记得换ip)
