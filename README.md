@@ -7,7 +7,7 @@
   3. 安装完成后 npm run start 启动前端项目
 > 进入 server/server 文件夹下   
   1. 找到 settings.py   
->>    82行   
+      82行   
       `DATABASES = {
           'default': {
               'ENGINE': 'django.db.backends.mysql',
@@ -18,8 +18,8 @@
               'PORT': '3306',
           }
       }`
-      自己修改数据库 (mysql)
->>    112行 `ALLOWED_HOSTS = ['192.168.1.33']` 修改 192.168.1.33 为查询中的IPv4
+      自己修改数据库 (mysql) 
+      112行 `ALLOWED_HOSTS = ['192.168.1.33']` 修改 192.168.1.33 为查询中的IPv4
   2. pip install Django
   3. pip install mysqlclient
   4. pip install djangorestframework
