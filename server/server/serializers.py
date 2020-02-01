@@ -12,3 +12,8 @@ class PCISerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         pic = PCI.objects.create(**validated_data)
         return pic
+
+    def update(self, instance, validated_data):
+        print(validated_data)
+        instance.update(**validated_data)
+        return instance

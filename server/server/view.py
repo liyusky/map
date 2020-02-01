@@ -46,7 +46,36 @@ class Test(APIView):
             if serializer.is_valid():
                 serializer.save()
             else:
-                response.refresh(code=11001, description=10534, error=serializer.errors)
+                response.refresh(code=11000, description=11000, error=serializer.errors)
                 state = status.HTTP_501_NOT_IMPLEMENTED
 
         return Response(response.content(), status=state)
+
+
+    def patch(self, request, *args, **kwargs):
+        response = ResponseContent(code=200, description=10002)
+        state = status.HTTP_200_OK
+        pci = PCI.objects.filter(id=request.data['id'])
+        serializer = PCISerializer(pci, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            response.refresh(code=10502, description=10502, error=serializer.errors)
+            state = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Response(response.content(), status=state)
+
+    def put(self, request, *args, **kwargs):
+        response = ResponseContent(code=200, description=10001)
+        state = status.HTTP_200_OK
+        serializer = PCISerializer(data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            response.refresh(code=10501, description=10501, error=serializer.errors)
+            state = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Response(response.content(), status=state)
+
+
+
