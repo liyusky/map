@@ -40,3 +40,5 @@ class PCI(models.Model):
 
     bleed = models.FloatField(default=0) ##  泛油
     repair = models.FloatField(default=0) ##  修补
+
+    keepAlive = models.BooleanField(default=True) 

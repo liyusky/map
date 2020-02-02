@@ -18,11 +18,11 @@ class Test(APIView):
         state = status.HTTP_200_OK
 
         try:
-            pci = PCI.objects.all()
+            pci = PCI.objects.filter(keepAlive=True)
             serializer = PCISerializer(pci, many=True)
             response.data = serializer.data
         except Exception as e:
-            response.refresh(code=500, description=10500, error=e.__str__())
+            response.refresh(code=10500, description=10500, error=e.__str__())
             state = status.HTTP_500_INTERNAL_SERVER_ERROR
 
         return Response(response.content(), status=state)
@@ -65,17 +65,34 @@ class Test(APIView):
 
         return Response(response.content(), status=state)
 
+
+    def delete(self, request, *args, **kwargs):
+        response = ResponseContent(code=200, description=10003)
+        state = status.HTTP_200_OK
+        pci = PCI.objects.filter(id=request.data['id'])
+        serializer = PCISerializer(pci, data={'keepAlive': False}, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+        else:
+            response.refresh(code=10503, description=10503, error=serializer.errors)
+            state = status.HTTP_500_INTERNAL_SERVER_ERROR
+
+        return Response(response.content(), status=state)
+
     def put(self, request, *args, **kwargs):
-        response = ResponseContent(code=200, description=10001)
+        response = ResponseContent(code=200, description=10004)
         state = status.HTTP_200_OK
         serializer = PCISerializer(data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            response.data = serializer.data
         else:
-            response.refresh(code=10501, description=10501, error=serializer.errors)
+            response.refresh(code=10504, description=10504, error=serializer.errors)
             state = status.HTTP_500_INTERNAL_SERVER_ERROR
 
         return Response(response.content(), status=state)
+
+
 
 
 

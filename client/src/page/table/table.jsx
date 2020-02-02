@@ -1,6 +1,6 @@
 import React from 'react';
 import Http from '../../modules/Http.class.js';
-import { Table, Input, Form, Button } from 'antd'
+import { Table, Input, Form, Button, Popover } from 'antd'
 
 
 const EditableContext = React.createContext();
@@ -562,6 +562,7 @@ export default class TableComponent extends React.Component {
               {
                 title: '等级评价',
                 dataIndex: 'valuation',
+                render: this.setRemoveRecord
               },
             ],
           },
@@ -608,7 +609,6 @@ export default class TableComponent extends React.Component {
     }
     return (
       <div>
-        <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>新建记录</Button>
         <Table
           columns={columns}
           dataSource={data}
@@ -617,6 +617,7 @@ export default class TableComponent extends React.Component {
           size="middle"
           components={components}
         />
+        <Button onClick={this.handleAdd} type="primary" style={{ marginBottom: 16 }}>新建记录</Button>
       </div>
     )
   }
@@ -635,7 +636,6 @@ export default class TableComponent extends React.Component {
       method: 'get',
     }).success(data => {
       data.forEach(item => {
-        item.key = item.id
         item = this.calculate(item)
       })
       this.setState({
@@ -645,6 +645,7 @@ export default class TableComponent extends React.Component {
   }
 
   calculate (record) {
+    record.key = record.id
     let ratio =  this.ratio
     let weight = 0
     for (const key in ratio) weight += record[key] * ratio[key]
@@ -665,60 +666,54 @@ export default class TableComponent extends React.Component {
   }
 
   handleSave = row => {
-    const newData = [...this.state.data];
-    const index = newData.findIndex(item => row.key === item.key);
-    const item = newData[index];
+    let newData = [...this.state.data];
+    let index = newData.findIndex(item => row.key === item.key);
+    let item = newData[index]
     row = this.calculate(row)
     newData.splice(index, 1, {
       ...item,
       ...row,
-    });
-    this.setState({ data: newData });
+    })
+    this.setState({ data: newData })
   }
 
   handleDelete = key => {
-    const data = [...this.state.data];
-    this.setState({ data: data.filter(item => item.key !== key) });
-  };
+    Http.send({
+      url: 'table',
+      method: 'delete',
+      data: {
+        id: key
+      }
+    }).success(() => {
+      let data = [...this.state.data]
+      this.setState({ data: data.filter(item => item.key !== key) })
+    })
+  }
 
   handleAdd = () => {
     let { data } = this.state;
-    let record = {
+    let newData = {
       "name": "要修改",
       "derication": "要修改",
       "number": "要修改",
-      "width": 0,
-      "length": 0,
-      "alligatorCrackSlightly": 0,
-      "alligatorCrackIntermediate": 0,
-      "alligatorCrackSerious": 0,
-      "netShapedCrackSlightly": 0,
-      "netShapedCrackSerious": 0,
-      "longitudinalCrackSlightly": 0,
-      "longitudinalCrackSerious": 0,
-      "transverseCrackSlightly": 0,
-      "transverseCrackSerious": 0,
-      "pitSlotSlightly": 0,
-      "pitSlotSerious": 0,
-      "looseCrackSlightly": 0,
-      "looseCrackSerious": 7.85,
-      "subsidenceSlightly": 0,
-      "subsidenceSerious": 0,
-      "rutSlightly": 0,
-      "rutSerious": 0,
-      "wavePackSlightly": 0,
-      "wavePackSerious": 0,
-      "bleed": 0,
-      "repair": 0
     }
     Http.send({
       url: 'add',
       method: 'put',
-      data: record
-    }).success(() => {
+      data: newData
+    }).success(record => {
       this.setState({
-        data: [...data, record]
+        data: [...data, this.calculate(record)]
       })
     })
-  };
+  }
+
+  setRemoveRecord = (text, record, index) => {
+    const content = (
+      <div onClick={this.handleDelete.bind(this, record.key)}>删除</div>
+    )
+    return (
+      <Popover placement="bottomRight" content={content} title={null} trigger="hover">{record.valuation}</Popover>
+    )
+  }
 }
